@@ -1,3 +1,38 @@
+<?php
+//表单进行处理
+if(!empty($_POST['username'])){
+  include_once './lib/fun.php';
+  $username = trim($_POST['username']);//mysql_real_escape_string()进行过滤
+  $password = trim($_POST['password']);
+  $repassword = trim($_POST['repassword']);
+  //判断用户名不能为空
+  if (!$username) {
+    echo '用户名不能为空';exit;
+  }
+  if (!$password) {
+    echo '密码不能为空';exit;
+  }
+  if (!$repassword) {
+    echo '确认密码不能为空';exit;
+  }
+  if ($password !== $repassword) {
+    echo '两次输入的密码不一致，请重新输入';exit;
+  }
+  //数据库的连接
+  $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
+  if (!$con) {
+    echo mysqli_errno();
+    exit;
+  }
+  //判断用户是否在数据表中存在
+  $sql = "SELECT COUNT('id') as total
+  FROM im_user
+  WHERE 'username' = '{$username}'";
+  $obj = mysqli_query($con, $sql);
+  $result = mysqli_fetch_assoc($obj);
+  var_dump($result);die;
+}
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +83,6 @@
                             <button type="submit">注册</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
@@ -91,5 +125,3 @@
     })
 </script>
 </html>
-
-
