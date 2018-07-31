@@ -18,3 +18,17 @@ function mysqlInit($host, $username, $password, $dbName)
   mysqli_set_charset($con, 'utf8');
   return $con;
 }
+
+
+/**
+ * 密码加密
+ * @param  [type] $password [description]
+ * @return [type]           [description]
+ */
+function createPassword($password)
+{
+  if (!$password) {
+    return false;
+  }
+  return md5(md5($password).'IMOOC');
+}

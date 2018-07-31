@@ -1,10 +1,12 @@
 <?php
 //表单进行处理
+include_once './lib/fun.php';
 if(!empty($_POST['username'])){
-  include_once './lib/fun.php';
+
   $username = trim($_POST['username']);//mysql_real_escape_string()进行过滤
   $password = trim($_POST['password']);
   $repassword = trim($_POST['repassword']);
+
   //判断用户名不能为空
   if (!$username) {
     echo '用户名不能为空';exit;
@@ -18,21 +20,45 @@ if(!empty($_POST['username'])){
   if ($password !== $repassword) {
     echo '两次输入的密码不一致，请重新输入';exit;
   }
+
   //数据库的连接
   $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
   if (!$con) {
     echo mysqli_errno();
     exit;
   }
+
   //判断用户是否在数据表中存在
   $sql = "SELECT COUNT('id') as total
   FROM im_user
-  WHERE 'username' = '{$username}'";
+  WHERE username = '{$username}'";
   $obj = mysqli_query($con, $sql);
   $result = mysqli_fetch_assoc($obj);
-  var_dump($result);die;
+
+  //验证用户名是否存在
+  if (isset($result['total']) && $result['total'] > 0) {
+    echo '用户名已存在，请重新输入';
+    exit;
+  }
+
+  //密码处理
+  unset($obj, $result, $sql);
+  $password = createPassword($password);
+  //插入数据
+  $sql = "INSERT INTO im_user (username, password, create_time) VALUES('{$username}', '{$password}', '{$_SERVER['REQUEST_TIME']}')";
+  $obj = mysqli_query($con, $sql) or die (mysqli_error($con));
+  if ($obj) {
+    $userid = mysqli_insert_id($con);//插入成功的主键id
+    echo sprintf('恭喜注册成功，用户名是：%s，用户id：%s', $username, $userid);
+    exit;
+  }
+  else {
+    return printf("Connect failed: %s\n", mysqli_connect_error($con));
+    exit;
+  }
+
 }
- ?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
