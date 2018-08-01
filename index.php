@@ -1,8 +1,16 @@
+<?php
+//开启session
+session_start();
+if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
+    header('Location:index.php');
+}
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>M-GALLARY|首页</title>
+    <!-- <link rel="stylesheet" type="text/css" href="./static/css/common.css"/> -->
     <link rel="stylesheet" type="text/css" href="./static/css/common.css"/>
     <link rel="stylesheet" type="text/css" href="./static/css/index.css"/>
 </head>
@@ -29,7 +37,7 @@
                 <div class="info">
                     <a href=""><h3 class="img_title">无名女郎</h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。 
+                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
                     </p>
                     <div class="btn">
                         <a href="#" class="edit">编辑</a>
@@ -42,7 +50,7 @@
                 <div class="info">
                     <a href=""><h3 class="img_title">无名女郎</h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。 
+                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
                     </p>
                     <div class="btn">
                         <a href="#" class="edit">编辑</a>
@@ -55,7 +63,7 @@
                 <div class="info">
                     <a href=""><h3 class="img_title">无名女郎</h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。 
+                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
                     </p>
                     <div class="btn">
                         <a href="#" class="edit">编辑</a>
@@ -68,7 +76,7 @@
                 <div class="info">
                     <a href=""><h3 class="img_title">无名女郎</h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。 
+                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
                     </p>
                     <div class="btn">
                         <a href="#" class="edit">编辑</a>
@@ -81,7 +89,7 @@
                 <div class="info">
                     <a href=""><h3 class="img_title">无名女郎</h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。 
+                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
                     </p>
                     <div class="btn">
                         <a href="#" class="edit">编辑</a>
@@ -94,7 +102,7 @@
                 <div class="info">
                     <a href=""><h3 class="img_title">无名女郎</h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。 
+                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
                     </p>
                     <div class="btn">
                         <a href="#" class="edit">编辑</a>

@@ -1,3 +1,47 @@
+<?php
+//开启session
+session_start();
+if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
+    header('Location:index.php');
+}
+//表单进行了提交处理
+if (!empty($_POST['username'])) {
+    include_once './lib/fun.php';
+    $username = trim($_POST['username']);//mysql_real_escape_string()进行过滤
+    $password = trim($_POST['password']);
+    if (!$username) {
+        echo '用户名不能为空';
+        exit;
+    }
+    if (!$password) {
+        echo '密码不能为空';
+        exit;
+    }
+    //数据库连接
+    $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
+    if (!$con) {
+        echo mysqli_errno();
+        exit;
+    }
+
+    //根据用户名查询用户
+    $sql = "SELECT * FROM im_user WHERE username = '{$username}' LIMIT 1";
+    $obj = mysqli_query($con, $sql);
+    $result = mysqli_fetch_assoc($obj);
+    if (is_array($result) && !empty($result)) {
+        if (createPassword($password) == $result['password']) {
+            $_SESSION['user'] = $result;
+            header('Location:index.php');
+            exit;
+        } else {
+            echo '密码不正确';
+        }
+    } else {
+        echo '用户不存在，请重新输入！';
+        exit;
+    }
+}
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,7 +122,5 @@
         })
 
     })
-</script>
-
 </script>
 </html>
