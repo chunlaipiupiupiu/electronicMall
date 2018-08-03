@@ -10,12 +10,10 @@ if (!empty($_POST['username'])) {
     $username = trim($_POST['username']);//mysql_real_escape_string()进行过滤
     $password = trim($_POST['password']);
     if (!$username) {
-        echo '用户名不能为空';
-        exit;
+        msg(2, '用户名不能为空');
     }
     if (!$password) {
-        echo '密码不能为空';
-        exit;
+        msg(2, '密码不能为空');
     }
     //数据库连接
     $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
@@ -34,11 +32,10 @@ if (!empty($_POST['username'])) {
             header('Location:index.php');
             exit;
         } else {
-            echo '密码不正确';
+            msg(2, '密码不正确，请重新输入');
         }
     } else {
-        echo '用户不存在，请重新输入！';
-        exit;
+        msg(2, '用户不存在，请重新输入');
     }
 }
  ?>
@@ -122,5 +119,6 @@ if (!empty($_POST['username'])) {
         })
 
     })
+
 </script>
 </html>

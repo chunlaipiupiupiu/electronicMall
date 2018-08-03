@@ -2,7 +2,8 @@
 //开启session
 session_start();
 if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
-    header('Location:index.php');
+    header('Location:login.php');
+    exit;
 }
  ?>
 <!DOCTYPE html>
