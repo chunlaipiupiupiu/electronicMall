@@ -2,9 +2,16 @@
 //表单进行处理
 include_once './lib/fun.php';
 if (!empty($_POST['username'])) {
-    $username = trim($_POST['username']);//mysql_real_escape_string()进行过滤
-    $password = trim($_POST['password']);
-    $repassword = trim($_POST['repassword']);
+    //数据库的连接
+    $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
+    if (!$con) {
+        echo mysqli_errno();
+        exit;
+    }
+
+    $username = trim(mysqli_real_escape_string($con, $_POST['username']));//mysql_real_escape_string()进行过滤
+    $password = trim(mysqli_real_escape_string($con, $_POST['password']));
+    $repassword = trim(mysqli_real_escape_string($con, $_POST['repassword']));
 
     //判断用户名不能为空
     if (!$username) {
@@ -18,13 +25,6 @@ if (!empty($_POST['username'])) {
     }
     if ($password !== $repassword) {
         msg(2, '两次输入的密码不一致，请重新输入');
-    }
-
-    //数据库的连接
-    $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
-    if (!$con) {
-        echo mysqli_errno();
-        exit;
     }
 
     //判断用户是否在数据表中存在

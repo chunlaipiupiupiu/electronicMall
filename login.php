@@ -7,19 +7,22 @@ if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
 //表单进行了提交处理
 if (!empty($_POST['username'])) {
     include_once './lib/fun.php';
-    $username = trim($_POST['username']);//mysql_real_escape_string()进行过滤
-    $password = trim($_POST['password']);
-    if (!$username) {
-        msg(2, '用户名不能为空');
-    }
-    if (!$password) {
-        msg(2, '密码不能为空');
-    }
+
     //数据库连接
     $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
     if (!$con) {
         echo mysqli_errno();
         exit;
+    }
+
+    //escape variables for security
+    $username = trim(mysqli_real_escape_string($con, $_POST['username']));//mysql_real_escape_string()进行过滤
+    $password = trim(mysqli_real_escape_string($con, $_POST['password']));
+    if (!$username) {
+        msg(2, '用户名不能为空');
+    }
+    if (!$password) {
+        msg(2, '密码不能为空');
     }
 
     //根据用户名查询用户
