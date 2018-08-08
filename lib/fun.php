@@ -49,3 +49,41 @@ function msg($type, $msg=null, $url=null)
     header($toUrl);
     exit;
 }
+
+/**
+ * 图像上传
+ * @param  [type] $file [description]
+ * @return [type]       imgUrl 图片的url
+ */
+function imgUpload($file)
+{
+    //检查上传文件是否合法
+    if (!is_uploaded_file($file['tmp_name'])) {
+        msg(2, '请上传符合规范的图片');
+    }
+    $type = $file['type'];
+    if (!in_array($type, array("image/png", "image/gif", "image/jpeg"))) {
+        msg(2, '请上传png,gif,jpeg格式的图像');
+    }
+    //上传目录
+    $uploadPath = './static/file/';
+    //上传目录url
+    $uploadUrl = '/static/file/';
+    //上传目录文件夹
+    $fileDir = date('Y/md/', $_SERVER['REQUEST_TIME']);
+    if (!is_dir($uploadPath.$fileDir)) {
+        mkdir($uploadPath.$fileDir, 755, true);//可递归创建
+    }
+    //获取文件的扩展名
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    //上传图像名称
+    $img = uniqid().mt_rand().'.'.$ext;
+    //图形路径
+  $imgPath = $uploadPath.$fileDir.$img;//物理地址
+  $imgUrl = 'localhost'.$uploadUrl.$fileDir.$img;//url地址
+  //操作失败，查看操作目录的权限
+  if (!move_uploaded_file($file['tmp_name'], $imgPath)) {
+      msg(2, '服务器繁忙，请稍后再试');
+  }
+    return $imgUrl;
+}

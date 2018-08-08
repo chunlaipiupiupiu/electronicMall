@@ -9,6 +9,7 @@ if (!empty($_POST['username'])) {
         exit;
     }
 
+    //escape variables for security
     $username = trim(mysqli_real_escape_string($con, $_POST['username']));//mysql_real_escape_string()进行过滤
     $password = trim(mysqli_real_escape_string($con, $_POST['password']));
     $repassword = trim(mysqli_real_escape_string($con, $_POST['repassword']));

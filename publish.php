@@ -1,3 +1,63 @@
+<?php
+include_once './lib/fun.php';
+//开启session
+session_start();
+if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
+    msg(2, '请登录', 'login.php');
+}
+$user = $_SESSION['user'];
+
+//进行表单提交处理
+if (!empty($_POST['name'])) {
+    //数据库连接
+    $con = mysqli_connect('127.0.0.1', 'root', '', 'imooc_mall');
+
+    //画品名称
+    $name = mysqli_real_escape_string($con, trim($_POST['name']));
+    //画品价格
+    $price = intval($_POST['price']);
+    //画品简介
+    $des = mysqli_real_escape_string($con, trim($_POST['des']));
+    //画品详情
+    $content = mysqli_real_escape_string($con, trim($_POST['content']));
+    //验证处理
+    $nameLength = mb_strlen($name, 'utf-8');
+    if ($nameLength<0 || $nameLength>30) {
+        msg(2, '画品名应在1~30字符之内');
+    }
+    if ($price<0 || $price>999999999) {
+        msg(2, '画品价格应该在1~999999999之内');
+    }
+    $desLength = mb_strlen($des, 'utf-8');
+    if ($desLength<0 || $desLength>100) {
+        msg(2, '画品简介应该在1~100字符之内');
+    }
+    if (empty($content)) {
+        msg(2, '画品详情不能为空');
+    }
+    $userId = $user['id'];
+    $pic = imgUpload($_FILES['file']);
+    $now = $_SERVER['REQUEST_TIME'];
+
+    //画品名称唯一性验证
+    $sql = "SELECT COUNT('id') AS total FROM im_goods WHERE `name` = '{$name}'";
+    $obj = mysqli_query($con, $sql);
+    $result = mysqli_fetch_assoc($obj);
+    if (isset($result) && $result['total']>0) {
+        msg(2, '画品名已存在');
+    }
+
+    //入库处理
+    $sql = "INSERT INTO im_goods (name, price, pic, des, content, user_id, create_time, update_time, view)
+    VALUES('{$name}', '{$price}', '{$pic}', '{$des}', '{$content}', '{$userId}', '{$now}', '{$now}', 0)";
+    if ($obj = mysqli_query($con, $sql)) {
+        msg(1, '操作成功', 'index.php');
+    } else {
+        echo mysqli_error($con);
+        exit;
+    }
+}
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
