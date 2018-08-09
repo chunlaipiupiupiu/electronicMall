@@ -73,7 +73,7 @@ if (!empty($_POST['name'])) {
     </div>
     <div class="auth fr">
         <ul>
-            <li><span>管理员: imooc</span></li>
+            <li><span>管理员: <?php echo $user['username']; ?></span></li>
             <li><a href="#">退出</a></li>
         </ul>
     </div>

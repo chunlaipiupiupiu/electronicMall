@@ -1,10 +1,29 @@
 <?php
-//开启session
-session_start();
-if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
-    header('Location:login.php');
-    exit;
+include_once './lib/fun.php';
+if ($login = checkLogin()) {
+    $user = $_SESSION['user'];
 }
+//检查page参数
+$page = isset($_GET['page'])?intval($_GET['page']):1;
+//将page与1进行对比，取其中最大值，防止将page的值进行非法的修改
+$page = max($page, 1);
+//每页显示的条数
+$pageSize = 2;
+//page = 1 limit 0, 2
+//page = 2 limit 2, 4
+//page = 3 limit 4, 6
+$offset = ($page-1)*$pageSize;
+
+//数据库连接
+$con = mysqli_connect('127.0.0.1', 'root', '', 'imooc_mall');
+//按照id的从小到大，view的从大到小排序
+$sql = "SELECT * FROM im_goods ORDER BY 'id' ASC, 'view' DESC LIMIT {$offset}, {$pageSize} ";
+$obj = mysqli_query($con, $sql);
+$goods = array();
+while ($result = mysqli_fetch_assoc($obj)) {
+    $goods = $result;
+}
+echo pages(20, $page, $pageSize, 5);
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,8 +41,13 @@ if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
     </div>
     <div class="auth fr">
         <ul>
-            <li><a href="login.php">登录</a></li>
-            <li><a href="register.php">注册</a></li>
+            <?php if ($login): ?>
+                <li><span>管理员: <?php echo $user['username']; ?></span></li>
+                <li><a href="login_out.php">退出</a></li>
+            <?php else: ?>
+                <li><a href="login.php">登录</a></li>
+                <li><a href="register.php">注册</a></li>
+            <?php endif; ?>
         </ul>
     </div>
 </div>

@@ -87,3 +87,69 @@ function imgUpload($file)
   }
     return $imgUrl;
 }
+
+/**
+ * 检查用户登录
+ * @return [type] [description]
+ */
+function checkLogin()
+{
+    //开启session
+    session_start();
+    //用户未登陆返回false
+    if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
+        return false;
+    }
+    return true;
+}
+
+function pages($total, $currentPage, $pageSize, $show=6)
+{
+    $pageStr = '';
+    //仅当总数大于每页条数，才进行分页处理
+    if ($total > $pageSize) {
+        //获取总页数，向上取整
+        $totalPage = ceil($total / $pageSize);
+        //对当前页进行容错处理
+        $currentPage = $currentPage>$total ? $totalPage : $currentPage;
+        //分页起始页
+        $from = max(1, $currentPage - intval($show/2));
+        //分页结束页
+        if ($currentPage - intval($show/2) <= 0) {
+            $to = $show;
+        } elseif ($currentPage + intval($show/2) > $totalPage) {
+            $from = $totalPage - $show + 1;
+            $to = $totalPage;
+        } else {
+            $to = $currentPage + intval($show/2);
+        }
+        $pageStr .= '<div class="page-nav">';
+        $pageStr .= '<ul>';
+        //当且仅当当前页大于1时，存在首页和上一页按钮
+        if ($currentPage > 1) {
+            $pageStr .= "<li><a href='1'>首页</a></li>";
+            $pageStr .= "<li><a href='".($currentPage-1)."'>上一页</a></li>";
+        }
+        if ($from > 1) {
+            $pageStr .= '<li>...</li>';
+        }
+        for ($i=$from; $i <= $to; $i++) {
+            if ($i != $currentPage) {
+                $pageStr .= "<li><a href='".($i)."'>{$i}</a></li>";
+            } else {
+                $pageStr .= "<li><span class='curr-page'>{$i}</span></li>";
+            }
+        }
+        if ($to < $totalPage) {
+            $pageStr .= '<li>...</li>';
+        }
+        if ($currentPage < $totalPage) {
+            $pageStr .= "<li><a href='".($currentPage+1)."'>下一页</a></li>";
+            $pageStr .= "<li><a href='1'>尾页</a></li>";
+        }
+
+        $pageStr .= '</ul>';
+        $pageStr .= '</div>';
+    }
+    return $pageStr;
+}

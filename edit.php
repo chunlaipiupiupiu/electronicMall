@@ -1,4 +1,27 @@
-
+<?php
+include_once './lib/fun.php';
+//开启session
+session_start();
+if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
+    msg(2, '请登录', 'login.php');
+}
+$user = $_SESSION['user'];
+//校验url中商品id
+$goodsId = isset($_GET['id'])||is_numeric($_GET['id'])?intval($_GET['id']):'';
+//如果商品id不存在，跳转到商品列表
+if (!$goodsId) {
+    msg(2, '参数非法', 'index.php');
+}
+//根据商品id查询商品信息
+//数据库连接
+$con = mysqli_connect('127.0.0.1', 'root', '', 'imooc_mall');
+$sql = "SELECT * FROM im_goods WHERE id = {$goodsId} LIMIT 1";
+$obj = mysqli_query($con, $sql);
+//当根据id查询商品信息为空，则跳转商品列表页面
+if (!$goods = mysqli_fetch_assoc($obj)) {
+    msg(2, '画品不存在', 'index.php');
+}
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,10 +49,10 @@
             <form name="publish-form" id="publish-form" action="do_edit.php" method="post"
                   enctype="multipart/form-data">
                 <div class="additem">
-                    <label id="for-name">画品名称</label><input type="text" name="name" id="name" placeholder="请输入画品名称" value="">
+                    <label id="for-name">画品名称</label><input type="text" name="name" id="name" placeholder="请输入画品名称" value="<?php echo $goods['name'] ?>">
                 </div>
                 <div class="additem">
-                    <label id="for-price">价值</label><input type="text" name="price" id="price" placeholder="请输入画品价值" value="" >
+                    <label id="for-price">价值</label><input type="text" name="price" id="price" placeholder="请输入画品价值" value="<?php echo $goods['price'] ?>" >
                 </div>
                 <div class="additem">
                     <!-- 使用accept html5属性 声明仅接受png gif jpeg格式的文件                -->
@@ -37,16 +60,18 @@
                 </div>
                 <div class="additem textwrap">
                     <label class="ptop" id="for-des">画品简介</label>
-                    <textarea id="des" name="des" placeholder="请输入画品简介"></textarea>
+                    <textarea id="des" name="des" placeholder="请输入画品简介"><?php echo $goods['des'] ?></textarea>
                 </div>
                 <div class="additem textwrap">
                     <label class="ptop" id="for-content">画品详情</label>
                     <div style="margin-left: 120px" id="container">
-                        <textarea id="content" name="content"></textarea>
+                        <textarea id="content" name="content"><?php echo $goods['content'] ?></textarea>
                     </div>
 
                 </div>
                 <div style="margin-top: 20px">
+                    <!-- 隐藏商品id， 用于提交商品信息 -->
+                    <input type="hidden" name="id" value="<?php echo $goods['id']; ?>">
                     <button type="submit">发布</button>
                 </div>
 
@@ -110,12 +135,12 @@
                 return false;
             }
 
-            if (file == '' || file.length <= 0) {
-                layer.tips('请选择图片', '#file', {time: 2000, tips: 2});
-                $('#file').focus();
-                return false;
-
-            }
+            // if (file == '' || file.length <= 0) {
+            //     layer.tips('请选择图片', '#file', {time: 2000, tips: 2});
+            //     $('#file').focus();
+            //     return false;
+            //
+            // }
 
             if (des.length <= 0 || des.length >= 100) {
                 layer.tips('画品简介应在1-100字符之内', '#content', {time: 2000, tips: 2});

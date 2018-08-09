@@ -1,12 +1,10 @@
 <?php
-//开启session
-session_start();
-if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
-    header('Location:index.php');
+include_once './lib/fun.php';
+if (checkLogin()) {
+    msg(1, '您已登录', 'index.php');
 }
 //表单进行了提交处理
 if (!empty($_POST['username'])) {
-    include_once './lib/fun.php';
 
     //数据库连接
     $con = mysqlInit('127.0.0.1', 'root', '', 'imooc_mall');
