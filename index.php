@@ -8,7 +8,7 @@ $page = isset($_GET['page'])?intval($_GET['page']):1;
 //将page与1进行对比，取其中最大值，防止将page的值进行非法的修改
 $page = max($page, 1);
 //每页显示的条数
-$pageSize = 2;
+$pageSize = 6;
 //page = 1 limit 0, 2
 //page = 2 limit 2, 4
 //page = 3 limit 4, 6
@@ -16,14 +16,24 @@ $offset = ($page-1)*$pageSize;
 
 //数据库连接
 $con = mysqli_connect('127.0.0.1', 'root', '', 'imooc_mall');
+$sql = "SELECT COUNT('id') AS total FROM im_goods";
+$obj = mysqli_query($con, $sql);
+$result = mysqli_fetch_assoc($obj);
+$total = isset($result['total']) ? $result['total'] : 0;
+unset($sql,$obj, $result);
 //按照id的从小到大，view的从大到小排序
-$sql = "SELECT * FROM im_goods ORDER BY 'id' ASC, 'view' DESC LIMIT {$offset}, {$pageSize} ";
+$sql = "SELECT `id`,`name`,`pic`,`des` FROM `im_goods` ORDER BY `id` asc,`view` desc limit {$offset},{$pageSize} ";
 $obj = mysqli_query($con, $sql);
 $goods = array();
+$k = 0;
 while ($result = mysqli_fetch_assoc($obj)) {
-    $goods = $result;
+    $goods[] = $result;
+    //截去它的localhost
+    $goods[$k]['pic'] = substr($goods[$k]['pic'], 10);
+    $k++;
 }
-echo pages(20, $page, $pageSize, 5);
+unset($k);
+$pages =  pages($total, $page, $pageSize, 5);
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,6 +53,7 @@ echo pages(20, $page, $pageSize, 5);
         <ul>
             <?php if ($login): ?>
                 <li><span>管理员: <?php echo $user['username']; ?></span></li>
+                <li><a href="publish.php">发布</a></li>
                 <li><a href="login_out.php">退出</a></li>
             <?php else: ?>
                 <li><a href="login.php">登录</a></li>
@@ -57,101 +68,24 @@ echo pages(20, $page, $pageSize, 5);
     </div>
     <div class="img-content">
         <ul>
+            <?php foreach ($goods as $v): ?>
             <li>
-                <img class="img-li-fix" src="./static/image/wumingnvlang.jpg" alt="">
+                <img class="img-li-fix" <?php echo 'src='.$v['pic'] ?> alt="<?php echo $v['name'] ?>">
                 <div class="info">
-                    <a href=""><h3 class="img_title">无名女郎</h3></a>
+                    <a href="detail.php?id=<?php echo $v['id'] ?>"><h3 class="img_title"><?php echo $v['name'] ?></h3></a>
                     <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
+                        <?php echo $v['des'] ?>
                     </p>
                     <div class="btn">
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del">删除</a>
+                        <a href="edit.php?id=<?php echo $v['id'] ?>" class="edit">编辑</a>
+                        <a href="delete.php?id=<?php echo $v['id'] ?>" class="del">删除</a>
                     </div>
                 </div>
             </li>
-            <li>
-                <img class="img-li-fix" src="./static/image/wumingnvlang.jpg" alt="">
-                <div class="info">
-                    <a href=""><h3 class="img_title">无名女郎</h3></a>
-                    <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
-                    </p>
-                    <div class="btn">
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del">删除</a>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <img class="img-li-fix" src="./static/image/wumingnvlang.jpg" alt="">
-                <div class="info">
-                    <a href=""><h3 class="img_title">无名女郎</h3></a>
-                    <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
-                    </p>
-                    <div class="btn">
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del">删除</a>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <img class="img-li-fix" src="./static/image/wumingnvlang.jpg" alt="">
-                <div class="info">
-                    <a href=""><h3 class="img_title">无名女郎</h3></a>
-                    <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
-                    </p>
-                    <div class="btn">
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del">删除</a>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <img class="img-li-fix" src="./static/image/wumingnvlang.jpg" alt="">
-                <div class="info">
-                    <a href=""><h3 class="img_title">无名女郎</h3></a>
-                    <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
-                    </p>
-                    <div class="btn">
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del">删除</a>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <img class="img-li-fix" src="./static/image/wumingnvlang.jpg" alt="">
-                <div class="info">
-                    <a href=""><h3 class="img_title">无名女郎</h3></a>
-                    <p>
-                       图片描述可以分为多种，一种是单一说明，就比如直接的告诉读者这篇文章要介绍什么样子的内容，一些配图可以分为含蓄类型的，这样的配图一般会 图片描述可以分为多种。
-                    </p>
-                    <div class="btn">
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del">删除</a>
-                    </div>
-                </div>
-            </li>
+            <?php endforeach ?>
         </ul>
     </div>
-    <div class="page-nav">
-        <ul>
-            <li><a href="#">首页</a></li>
-            <li><a href="#">上一页</a></li>
-            <li>...</li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">6</a></li>
-            <li><span class="curr-page">7</span></li>
-            <li><a href="#">8</a></li>
-            <li><a href="#">9</a></li>
-            <li>...</li>
-            <li><a href="#">下一页</a></li>
-            <li><a href="#">尾页</a></li>
-        </ul>
-    </div>
+    <?php echo $pages; ?>
 </div>
 
 <div class="footer">

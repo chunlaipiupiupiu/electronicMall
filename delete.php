@@ -29,3 +29,4 @@ if ($result = mysqli_query($con, $sql)) {
 } else {
     msg(2, '操作失败', 'index.php');
 }
+//tips:实际的开发中，不会直接删除商品而是用status进行标记 1：正常操作 2：删除操作
